@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Il giardino della felicità</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef3e6;--ink:#1d2b1f;--card:#fbfdf7;--line:#b9c8a8;--acc:#2f6b3a;--bad:#9b2c2c;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121c16;--ink:#e8efe0;--card:#1b2a20;--line:#34503c;--acc:#8fd19a;--bad:#f0a0a0}}
+:root[data-theme="dark"]{--bg:#121c16;--ink:#e8efe0;--card:#1b2a20;--line:#34503c;--acc:#8fd19a;--bad:#f0a0a0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Lora',Georgia,serif;line-height:1.55}
+main{max-width:980px;margin:0 auto;padding:16px}
+h1{font-family:'Nunito',system-ui,sans-serif;font-weight:800;font-size:clamp(1.4rem,4vw,2rem);margin:.2em 0}
+.lead{margin:0 0 12px;font-size:1.05rem}
+.hud{display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-family:'Nunito',system-ui,sans-serif;font-weight:800;margin-bottom:10px}
+.bar{flex:1;min-width:140px;height:14px;background:var(--line);border-radius:8px;overflow:hidden}
+.bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#e8a33a,#6fb04a);transition:width 1.6s cubic-bezier(.6,0,.3,1)}
+#wrap{position:relative;border-radius:14px;overflow:hidden;border:2px solid var(--line);transition:filter 2.5s}
+#scene{display:block;width:100%;height:auto;cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'><circle cx='16' cy='16' r='11' fill='white' fill-opacity='.3' stroke='%23222' stroke-width='3'/><line x1='24' y1='24' x2='36' y2='36' stroke='%23222' stroke-width='5' stroke-linecap='round'/></svg>") 16 16,zoom-in}
+.hit{cursor:inherit}
+.hit:hover{filter:brightness(1.12)}
+.grey #wrap{filter:grayscale(1) brightness(.8)}
+.grey .bar i{background:#777}
+#zoom{position:fixed;inset:0;background:rgba(10,14,10,.78);display:none;align-items:center;justify-content:center;padding:16px;z-index:5}
+#zoom.on{display:flex}
+#zcard{background:var(--card);border:2px solid var(--line);border-radius:14px;max-width:560px;width:100%;overflow:hidden;transform:scale(.1);opacity:0;transition:transform .55s cubic-bezier(.2,.8,.2,1),opacity .35s}
+#zoom.on #zcard{transform:scale(1);opacity:1}
+#zart svg{display:block;width:100%;height:auto}
+#zt{padding:14px 18px 18px}
+#zt h2{font-family:'Nunito',system-ui,sans-serif;margin:0 0 4px;font-size:1.15rem;color:var(--bad)}
+#zt p{margin:0 0 12px;font-style:italic}
+button{font:800 1rem 'Nunito',system-ui,sans-serif;background:var(--acc);color:var(--bg);border:0;border-radius:10px;padding:10px 18px;cursor:pointer}
+button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+#end{display:none;margin-top:18px;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:18px 22px}
+#end.on{display:block}
+#end h2{font-family:'Nunito',system-ui,sans-serif;margin-top:0}
+#end blockquote{margin:14px 0;padding:10px 16px;border-left:4px solid var(--bad);font-size:1.15rem}
+#code{margin-top:16px;padding:14px;border:2px dashed var(--acc);border-radius:12px;text-align:center;font-family:'Nunito',system-ui,sans-serif}
+#code b{display:block;font-size:2rem;letter-spacing:.06em;margin-top:4px}
+.hint{font-size:.9rem;opacity:.75}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<h1>Il giardino della felicità</h1>
+<p class="lead">Esplora il giardino. Trova <strong>5 elementi sani al 100%</strong> per vincere. Usa la lente e clicca sui fiori che ti sembrano più belli.</p>
+<div class="hud">
+ <span>Punti felicità: <span id="pts">100</span></span>
+ <div class="bar" aria-hidden="true"><i id="fill"></i></div>
+ <span>Elementi sani: <span id="ok">0</span>/5</span>
+</div>
+<div id="wrap">
+<svg id="scene" viewBox="0 0 800 480" role="img" aria-label="Giardino fiorito in primavera">
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd0f5"/><stop offset="1" stop-color="#e6f6ff"/></linearGradient>
+ <linearGradient id="lawn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7ccf55"/><stop offset="1" stop-color="#3f9a38"/></linearGradient>
+ <radialGradient id="sun"><stop offset="0" stop-color="#fff6b0"/><stop offset="1" stop-color="#ffd84a" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="800" height="480" fill="url(#sky)"/>
+<circle cx="700" cy="70" r="90" fill="url(#sun)"/><circle cx="700" cy="70" r="30" fill="#ffe46b"/>
+<ellipse cx="200" cy="80" rx="70" ry="20" fill="#fff" opacity=".85"/><ellipse cx="250" cy="70" rx="45" ry="16" fill="#fff" opacity=".85"/>
+<path d="M0 270 Q150 200 330 255 T800 240 V480 H0Z" fill="#a5de7c"/>
+<g id="prato" class="hit" data-k="prato"><path d="M0 320 Q400 290 800 320 V480 H0Z" fill="url(#lawn)"/>
+ <g stroke="#2f7a2c" stroke-width="2" stroke-linecap="round"><path d="M60 440l-4-14M64 440l3-16M300 450l-3-15M305 450l4-14M520 430l-3-14M690 450l3-15M180 400l-3-12M430 465l3-14"/></g></g>
+<g id="albero" class="hit" data-k="albero">
+ <path d="M130 330 Q140 250 135 160 L175 160 Q170 250 185 330Z" fill="#7a5233"/>
+ <path d="M150 300 Q158 240 152 170" stroke="#5a3a22" stroke-width="3" fill="none"/>
+ <g fill="#4aa540"><circle cx="90" cy="150" r="62"/><circle cx="170" cy="105" r="75"/><circle cx="240" cy="160" r="58"/><circle cx="150" cy="170" r="60"/></g>
+ <g fill="#ffb6cf"><circle cx="110" cy="120" r="7"/><circle cx="180" cy="80" r="7"/><circle cx="225" cy="140" r="7"/><circle cx="140" cy="165" r="7"/><circle cx="70" cy="165" r="7"/><circle cx="200" cy="120" r="7"/></g>
+</g>
+<g id="ramo" class="hit" data-k="ramo"><path d="M800 130 Q700 120 610 150" stroke="#6b4a2d" stroke-width="9" fill="none" stroke-linecap="round"/>
+ <g fill="#ff9ec1"><circle cx="760" cy="125" r="11"/><circle cx="715" cy="128" r="11"/><circle cx="670" cy="138" r="11"/><circle cx="635" cy="146" r="11"/></g><g fill="#6fbf4f"><ellipse cx="740" cy="140" rx="12" ry="6"/><ellipse cx="690" cy="146" rx="12" ry="6"/></g></g>
+<g id="rosa" class="hit" data-k="rosa">
+ <ellipse cx="350" cy="330" rx="85" ry="40" fill="#2f8a3a"/>
+ <g stroke="#2f7a2c" stroke-width="5"><path d="M320 330V280M355 330V260M390 330V285"/></g>
+ <g fill="#e0303f"><circle cx="320" cy="272" r="22"/><circle cx="355" cy="250" r="26"/><circle cx="391" cy="277" r="21"/></g>
+ <g fill="none" stroke="#a81f2e" stroke-width="3"><circle cx="355" cy="250" r="15"/><circle cx="355" cy="250" r="7"/><circle cx="320" cy="272" r="11"/><circle cx="391" cy="277" r="10"/></g>
+</g>
+<g id="giglio" class="hit" data-k="giglio">
+ <g stroke="#2f7a2c" stroke-width="5"><path d="M510 350V270M560 350V250M610 350V275"/></g>
+ <g fill="#fff" stroke="#d8d8cc" stroke-width="2"><path d="M510 270 L488 232 Q510 245 510 262 Q510 245 532 232Z"/><path d="M560 250 L535 205 Q560 222 560 242 Q560 222 585 205Z"/><path d="M610 275 L588 238 Q610 250 610 267 Q610 250 632 238Z"/></g>
+ <g fill="#f4c542"><circle cx="560" cy="226" r="4"/><circle cx="510" cy="248" r="3"/><circle cx="610" cy="254" r="3"/></g>
+</g>
+<g id="margherita" class="hit" data-k="margherita">
+ <g stroke="#2f7a2c" stroke-width="3"><path d="M700 360V330M740 365V335M665 365V338"/></g>
+ <g fill="#fff"><circle cx="700" cy="322" r="14"/><circle cx="740" cy="327" r="14"/><circle cx="665" cy="330" r="14"/></g>
+ <g fill="#ffcc00"><circle cx="700" cy="322" r="7"/><circle cx="740" cy="327" r="7"/><circle cx="665" cy="330" r="7"/></g>
+</g>
+</svg>
+</div>
+<p class="hint">Suggerimento: i fiori più belli non sono sempre i più sani. Guarda da vicino.</p>
+
+<section id="end" aria-live="polite">
+<h2>Il giardino non è un luogo di delizie</h2>
+<p>All’inizio, Leopardi credeva che la Natura fosse una “madre benigna” che donava agli uomini le illusioni per coprire il dolore del “vero”, e che l’infelicità fosse colpa solo della ragione dei moderni. Ma scrivendo la pagina del giardino, questa certezza crolla: la Natura si rivela una “Matrigna”, una forza meccanica e indifferente che crea la vita solo per distruggerla.</p>
+<p>Attraverso questo esperimento, Leopardi scopre due verità spietate:</p>
+<ul>
+<li><strong>La sofferenza colpisce tutti:</strong> se l’infelicità fosse colpa solo della civiltà umana, gli animali e le piante sarebbero felici. Invece, anche la rosa è bruciata dal sole e il giglio è trafitto dall’ape. Il male è una legge biologica universale.</li>
+<li><strong>La Natura è indifferente:</strong> il mondo è un ciclo spietato in cui, per far vivere una creatura, bisogna distruggerne un’altra (come il giardiniere che pota o l’insetto che aggredisce il fiore). La Natura mette al mondo i suoi figli condannandoli al patimento solo per mantenere in funzione la sua macchina.</li>
+</ul>
+<blockquote>Il giardino non è un luogo di delizie, ma un “vasto ospitale” pieno di malati.</blockquote>
+<fieldset style="border:2px solid var(--line);border-radius:12px;margin:16px 0 10px;padding:8px 16px 10px"><legend style="font-family:'Nunito',system-ui,sans-serif;font-weight:800;padding:0 6px">Domanda di controllo: perché la pagina del giardino fa crollare la prima certezza di Leopardi?</legend>
+<label style="display:block;padding:5px 0;cursor:pointer"><input type="radio" name="q" value="0"> Perché dimostra che la Natura è una madre benigna, ma gli uomini la rovinano con la ragione</label>
+<label style="display:block;padding:5px 0;cursor:pointer"><input type="radio" name="q" value="0"> Perché mostra che i moderni soffrono più degli antichi, avendo perso le illusioni</label>
+<label style="display:block;padding:5px 0;cursor:pointer"><input type="radio" name="q" value="1"> Perché anche piante e animali soffrono: se l’infelicità fosse colpa solo della civiltà umana, loro sarebbero felici</label>
+<label style="display:block;padding:5px 0;cursor:pointer"><input type="radio" name="q" value="0"> Perché il giardiniere che pota le piante dimostra la crudeltà dell’uomo verso la Natura</label></fieldset>
+<p class="hint" id="rh" aria-live="polite">Leggi il testo e rispondi: solo con la risposta esatta potrai scoprire il codice.</p>
+<button id="read" type="button" disabled>Scopri il codice</button>
+<div id="code" hidden>La quarta parte del codice di sblocco della stanza è:<b>ma per</b></div>
+</section>
+</main>
+
+<div id="zoom" role="dialog" aria-modal="true" aria-labelledby="zh">
+ <div id="zcard"><div id="zart"></div><div id="zt"><h2 id="zh"></h2><p id="zm"></p><button id="zb" type="button">Continua a esplorare</button></div></div>
+</div>
+
+<script>
+var D={
+rosa:{h:"La rosa",m:"“La rosa è offesa dal sole che le ha dato la vita; langue e appassisce.”",
+s:'<rect width="400" height="260" fill="#ffe9b8"/><circle cx="340" cy="40" r="34" fill="#ffd23a"/><g stroke="#ffb300" stroke-width="5" stroke-linecap="round"><path d="M340 -5v15M385 40h-15M372 8l-10 10M372 72l-10-10M300 40h-14M308 8l10 10"/></g><g stroke="#fff3a0" stroke-width="3" stroke-dasharray="6 8"><path d="M320 62L230 140M335 70L290 170"/></g><g fill="#d6283a"><ellipse cx="200" cy="150" rx="120" ry="80"/></g><g fill="none" stroke="#a81f2e" stroke-width="4"><ellipse cx="200" cy="150" rx="85" ry="55"/><ellipse cx="200" cy="150" rx="50" ry="32"/><ellipse cx="200" cy="150" rx="20" ry="12"/></g><g fill="#6b3a1a"><path d="M80 120q10-30 40-40l5 20q-25 5-30 25z"/><path d="M290 70q30 10 40 40l-20 5q-5-25-25-30z"/><path d="M300 200q25-5 40-30l10 15q-15 20-40 25z"/><path d="M90 200q-5 20 15 35l15-15q-15-5-18-18z"/></g><g fill="#3a2410" opacity=".6"><circle cx="140" cy="100" r="9"/><circle cx="260" cy="115" r="7"/><circle cx="230" cy="215" r="10"/></g>'},
+giglio:{h:"Il candido giglio",m:"“Il giglio è succhiato crudelmente dalle api nelle sue fibre più vitali.”",
+s:'<rect width="400" height="260" fill="#eef7e4"/><path d="M60 260 Q120 80 200 60 Q280 80 340 260Z" fill="#fff" stroke="#d8d8cc" stroke-width="3"/><path d="M200 70V240" stroke="#e5e5d6" stroke-width="3"/><g fill="#f4c542"><circle cx="165" cy="190" r="6"/><circle cx="235" cy="195" r="6"/></g><g transform="translate(200 120) rotate(-20)"><ellipse rx="40" ry="26" fill="#f6c315"/><g fill="#222"><rect x="-18" y="-26" width="9" height="52" rx="4"/><rect x="2" y="-26" width="9" height="52" rx="4"/></g><circle cx="-44" cy="-4" r="14" fill="#222"/><ellipse cx="0" cy="-36" rx="34" ry="14" fill="#cfe8ff" opacity=".8" transform="rotate(-15)"/><path d="M40 4 L78 28" stroke="#222" stroke-width="5" stroke-linecap="round"/></g><g fill="#cdd9a0"><path d="M262 150q6 14 0 22q-8-8 0-22z"/><path d="M285 170q5 12 0 18q-7-7 0-18z"/></g>'},
+albero:{h:"L’albero maestoso",m:"Il tronco è scavato dalle larve e percorso dalle formiche: la maestà dell’albero si consuma dall’interno.",
+s:'<rect width="400" height="260" fill="#8a5a36"/><g stroke="#5a3a22" stroke-width="5" fill="none"><path d="M40 0Q55 130 35 260M120 0Q135 130 115 260M210 0Q225 130 205 260M300 0Q315 130 295 260M380 0Q395 130 375 260"/></g><g fill="#2a1608"><ellipse cx="150" cy="90" rx="46" ry="28"/><ellipse cx="270" cy="170" rx="54" ry="32"/><ellipse cx="80" cy="200" rx="30" ry="20"/></g><g fill="#f3e3b4" stroke="#c9b378" stroke-width="2"><ellipse cx="150" cy="92" rx="28" ry="12"/><ellipse cx="275" cy="172" rx="34" ry="13"/><ellipse cx="82" cy="202" rx="18" ry="9"/></g><g fill="#c9b378"><rect x="136" y="82" width="3" height="20"/><rect x="152" y="82" width="3" height="20"/><rect x="258" y="162" width="3" height="20"/><rect x="278" y="162" width="3" height="20"/></g><g fill="#111"><circle cx="210" cy="60" r="7"/><circle cx="224" cy="68" r="9"/><circle cx="240" cy="80" r="6"/><circle cx="90" cy="130" r="7"/><circle cx="102" cy="140" r="9"/><circle cx="330" cy="100" r="7"/><circle cx="344" cy="110" r="9"/></g><g stroke="#111" stroke-width="2"><path d="M205 56l-8-6M228 60l6-8M236 88l8 4M86 126l-8-6M106 134l8-4M326 96l-8-6M348 104l8-6"/></g>'},
+prato:{h:"Il prato verde",m:"“Camminando hai stritolato le erbe, le hai rotte e ne hai spremuto il sangue.”",
+s:'<rect width="400" height="260" fill="#4c9a3a"/><g stroke="#2f7a2c" stroke-width="4" stroke-linecap="round"><path d="M20 260l-6-90M50 260l4-100M340 260l8-95M375 260l-4-90M30 260l10-60M360 260l-10-70"/></g><g fill="#2a1d14" opacity=".88"><path d="M140 40q60-30 110 6q18 40-8 80q-40 22-96 4q-26-44-6-90z"/><path d="M130 165q70-20 120 6q10 36-20 56q-60 14-100-6q-14-30 0-56z"/></g><g stroke="#4c9a3a" stroke-width="5" stroke-linecap="round" opacity=".9"><path d="M158 70h70M150 95h86M160 120h66M150 185h80M156 205h70"/></g><g fill="#a8e060"><path d="M100 150q8 20 0 30q-12-12 0-30z"/><path d="M290 130q8 20 0 30q-12-12 0-30z"/><path d="M270 205q7 16 0 24q-10-10 0-24z"/></g><path d="M100 150l30 -18M160 130l-50 6" stroke="#2f7a2c" stroke-width="4"/>'},
+margherita:{h:"La margherita",m:"Le formiche si arrampicano sui petali bianchi: ogni fiore è già preda di qualcuno.",
+s:'<rect width="400" height="260" fill="#e6f4d8"/><g fill="#fff" stroke="#dcdcd0" stroke-width="2"><ellipse cx="200" cy="40" rx="30" ry="48"/><ellipse cx="200" cy="220" rx="30" ry="48"/><ellipse cx="70" cy="130" rx="48" ry="30"/><ellipse cx="330" cy="130" rx="48" ry="30"/><ellipse cx="108" cy="52" rx="30" ry="48" transform="rotate(-45 108 52)"/><ellipse cx="292" cy="208" rx="30" ry="48" transform="rotate(-45 292 208)"/><ellipse cx="292" cy="52" rx="30" ry="48" transform="rotate(45 292 52)"/><ellipse cx="108" cy="208" rx="30" ry="48" transform="rotate(45 108 208)"/></g><circle cx="200" cy="130" r="42" fill="#f7c600"/><g fill="#111"><circle cx="200" cy="30" r="6"/><circle cx="200" cy="44" r="8"/><circle cx="72" cy="124" r="6"/><circle cx="86" cy="130" r="8"/><circle cx="330" cy="140" r="6"/><circle cx="316" cy="136" r="8"/><circle cx="260" cy="110" r="6"/><circle cx="246" cy="118" r="8"/><circle cx="160" cy="170" r="6"/><circle cx="170" cy="160" r="8"/></g><g fill="#b88a00" opacity=".55"><circle cx="190" cy="120" r="6"/><circle cx="215" cy="140" r="5"/></g>'},
+ramo:{h:"Il ramo di ciliegio",m:"Il vento che accarezza i fiori spezza il ramo e disperde i petali: anche la brezza di primavera fa male.",
+s:'<rect width="400" height="260" fill="#d7ecf7"/><g stroke="#fff" stroke-width="4" stroke-linecap="round" fill="none"><path d="M10 60Q80 40 150 70M0 120Q90 100 180 130M20 190Q100 170 190 200"/></g><path d="M0 120L170 140" stroke="#6b4a2d" stroke-width="22" stroke-linecap="round"/><path d="M165 128L214 150L180 158Z" fill="#e9d2a8"/><path d="M214 150Q300 190 380 250" stroke="#6b4a2d" stroke-width="18" stroke-linecap="round" fill="none"/><g fill="#ff9ec1"><circle cx="60" cy="108" r="14"/><circle cx="110" cy="118" r="14"/><circle cx="270" cy="170" r="14"/><circle cx="330" cy="215" r="14"/></g><g fill="#ffb6cf"><ellipse cx="200" cy="60" rx="9" ry="5" transform="rotate(30 200 60)"/><ellipse cx="250" cy="90" rx="9" ry="5" transform="rotate(-20 250 90)"/><ellipse cx="300" cy="60" rx="9" ry="5" transform="rotate(50 300 60)"/><ellipse cx="340" cy="110" rx="9" ry="5"/></g>'}
+};
+var found={},n=0,PTS=[100,84,63,38,0],$=function(i){return document.getElementById(i)};
+var zoom=$('zoom'),zcard=$('zcard'),last=null;
+function open(k,x,y){
+ var d=D[k];
+ $('zart').innerHTML='<svg viewBox="0 0 400 260" role="img" aria-label="'+d.h+' ingrandito">'+d.s+'</svg>';
+ $('zh').textContent=d.h;$('zm').textContent=d.m;
+ zcard.style.transformOrigin=x+'px '+y+'px';
+ zoom.classList.add('on');$('zb').focus();
+ if(!found[k]){found[k]=1;n++;$('pts').textContent=PTS[Math.min(n,4)];
+  $('fill').style.width=PTS[Math.min(n,4)]+'%';}
+}
+function close(){
+ zoom.classList.remove('on');
+ if(n>=4&&!document.body.classList.contains('grey'))finish();
+}
+function finish(){
+ document.body.classList.add('grey');
+ $('end').classList.add('on');
+ setTimeout(function(){$('end').scrollIntoView({behavior:'smooth',block:'start'})},500);
+}
+document.querySelectorAll('.hit').forEach(function(g){
+ g.addEventListener('click',function(e){open(g.dataset.k,e.clientX,e.clientY)});
+});
+var rb=$('read');
+document.querySelectorAll('input[name=q]').forEach(function(r){r.addEventListener('change',function(){var ok=r.value==='1';rb.disabled=!ok;$('rh').textContent=ok?'Risposta esatta! Ora puoi scoprire il codice.':'Non è questa: rileggi il testo e riprova.'})});
+rb.addEventListener('click',function(){$('code').hidden=false;rb.hidden=true;$('rh').hidden=true;$('code').scrollIntoView({behavior:'smooth',block:'center'})});
+$('zb').addEventListener('click',close);
+zoom.addEventListener('click',function(e){if(e.target===zoom)close()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&zoom.classList.contains('on'))close()});
+</script>
+</body>
+</html>
